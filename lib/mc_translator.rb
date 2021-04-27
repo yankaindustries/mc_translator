@@ -78,7 +78,11 @@ module McTranslator
     def push
       current_branch = @g.current_branch
       parent_branch = @config['parentBranch']
-      first_commit = @g.log.between(parent_branch, current_branch).last
+      if current_branch == @config['parentBranch']
+        first_commit = @g.log.last
+      else
+        first_commit = @g.log.between(parent_branch, current_branch).last
+      end
       origin_commit = first_commit.parent
       files = @config['matches'].flat_map { |match|
         @g.diff(origin_commit.sha)

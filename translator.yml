@@ -8,4 +8,4 @@ matches:
     type: YAML
   - pattern: '**/*.en-US.json'
     type: JSON
-parentBranch: master
+parentBranch: main
