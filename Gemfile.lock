@@ -1,0 +1,47 @@
+PATH
+  remote: .
+  specs:
+    mc_translator (0.1.0)
+      git (~> 1.8.1)
+      smartling
+      yaml (~> 0.1.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    git (1.8.1)
+      rchardet (~> 1.8)
+    http-accept (1.7.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    mime-types (3.3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2021.0225)
+    multi_json (1.15.0)
+    netrc (0.11.0)
+    oj (3.11.5)
+    rchardet (1.8.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
+    smartling (2.0.3)
+      multi_json (~> 1.0)
+      oj (~> 3.0)
+      rest-client (~> 2.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.7)
+    yaml (0.1.1)
+
+PLATFORMS
+  x86_64-darwin-20
+
+DEPENDENCIES
+  mc_translator!
+
+BUNDLED WITH
+   2.2.15
