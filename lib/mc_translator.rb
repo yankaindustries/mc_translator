@@ -1,56 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'mc_translator/version'
-require 'smartling'
+require_relative 'mc_translator/tasks'
+require_relative 'smartling/job'
 require 'yaml'
 require 'git'
-
-module Smartling
-  class Job < Api
-    def initialize(args = {})
-      super(args)
-      @project_id = args[:projectId]
-    end
-
-    def list
-      uri = uri("jobs-api/v3/projects/#{@project_id}/jobs")
-      return get(uri)
-    end
-
-    def detail(job_id)
-      uri = uri("/jobs-api/v3/projects/#{@project_id}/jobs/#{job_id}")
-      return get(uri)
-    end
-
-    def create(name)
-      keys = { jobName: name }
-      uri = uri("jobs-api/v3/projects/#{@project_id}/jobs", keys)
-      return post(uri, uri.params)
-    end
-
-    def find_or_create(name)
-      list['items'].find do |job| job['jobName'] == name end ||
-        @jobs.create(name)
-    end
-
-    def files(job_id)
-      uri = uri("jobs-api/v3/projects/#{@project_id}/jobs/#{job_id}/files")
-      return get(uri)
-    end
-
-    def add_file(job_id, file_uri, locales)
-      keys = { fileUri: file_uri, targetLocaleIds: locales }
-      uri = uri("jobs-api/v3/projects/#{@project_id}/jobs/#{job_id}/file/add", keys)
-      return post(uri, uri.params)
-    end
-
-    def authorize(job_id)
-      uri = uri("jobs-api/v3/projects/#{@project_id}/jobs/#{job_id}/authorize")
-      return post(uri, uri.params)
-    end
-
-  end
-end
+require 'smartling'
 
 
 module McTranslator
@@ -63,16 +18,18 @@ module McTranslator
     end
 
     def initialize
-      @config = YAML.safe_load(File.read('translator.yml'))
+      @config = YAML.safe_load(File.read('.translator.yml'))
+      p @config
       args = {
         userId: @config['userId'],
         userSecret: @config['userSecret'],
         projectId: @config['projectId'],
       }
 
+      @g = Git.open(Dir.getwd)
+
       @files = Smartling::File.new(args)
       @jobs = Smartling::Job.new(args)
-      @g = Git.open(Dir.getwd)
     end
 
     def push
@@ -101,6 +58,8 @@ module McTranslator
         p @jobs.add_file job['translationJobUid'], file[:path], @config['locales']
       }
 
+      # There's some sort of lag between the creating a job and the API
+      # returning the correct status, so we add a little delay to compensate
       sleep 2
 
       print_msg 'Checking job...'
@@ -128,6 +87,12 @@ module McTranslator
             File.write(name, content)
           }
         }
+    end
+
+    private
+
+    def get_files
+
     end
   end
 end
