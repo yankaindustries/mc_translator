@@ -25,7 +25,7 @@ module Smartling
 
     def find_or_create(name)
       list['items'].find do |job| job['jobName'] == name end ||
-        @jobs.create(name)
+        create(name)
     end
 
     def files(job_id)
