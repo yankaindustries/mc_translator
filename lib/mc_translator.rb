@@ -42,8 +42,10 @@ module McTranslator
       end
       origin_commit = first_commit.parent
       files = @config['matches'].flat_map { |match|
+
         @g.diff(origin_commit.sha)
           .select { |file| File.fnmatch(match['pattern'], file.path) }
+          .select { |file| %w(new modified).include? file.type }
           .map { |file| { path: file.path, name: file.path, type: match['type'] } }
       }
 
