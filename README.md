@@ -22,6 +22,22 @@ Then, in your [Rakefile](https://github.com/yankaindustries/masterclass/blob/i18
 require 'mc_translator
 ```
 
+Once you've got it installed, you'll need some basic configuration by adding a [.translations.yml]:
+
+```yaml
+userId:     xxxxxxxxxxxxxxxxxx
+userSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+projectId:  xxxxxxx
+locales:
+  - en-GB
+matches:
+  - pattern: '**/*en-US.yml'
+    type: YAML
+  - pattern: '**/*en-US.json'
+    type: JSON
+parentBranch: master
+```
+
 ## Usage
 
 To keep things as simple as possible, we've added some Rake commands so that you can do this as simply as running:
