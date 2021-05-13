@@ -7,7 +7,8 @@ This gem is for pushing and pulling translations to and from Smartling.
 Add this line to your application's [Gemfile](https://github.com/yankaindustries/masterclass/blob/i18n/mc_translator/Gemfile#L188):
 
 ```ruby
-gem 'mc_translator', github: 'yankaindustries/mc_translator', branch: 'main', require: 'smartling'
+source "https://rubygems.org"
+gem 'mc_translator', '~> 0.1.3'
 ```
 
 And then execute:
@@ -19,7 +20,7 @@ $ bundle install
 Then, in your [Rakefile](https://github.com/yankaindustries/masterclass/blob/i18n/mc_translator/Rakefile#L8):
 
 ```rb
-require 'mc_translator
+require 'mc_translator'
 ```
 
 Once you've got it installed, you'll need some basic configuration by adding a [.translations.yml](https://github.com/yankaindustries/masterclass/blob/i18n/mc_translator/.translator.yml):
