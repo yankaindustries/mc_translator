@@ -41,24 +41,24 @@ module McTranslator
         first_commit = @g.log.between(parent_branch, current_branch).last
       end
       origin_commit = first_commit.parent
-      files = @config['matches'].flat_map { |match|
+      files = @config['matches'].flat_map do |match|
 
         @g.diff(origin_commit.sha)
           .select { |file| File.fnmatch(match['pattern'], file.path) }
           .select { |file| %w(new modified).include? file.type }
           .map { |file| { path: file.path, name: file.path, type: match['type'] } }
-      }
+      end
 
       print_msg 'Finding or Creating job...'
       job = @jobs.find_or_create current_branch
       p job
 
       print_msg 'Uploading files...'
-      files.each { |file|
+      files.each do |file|
         p file
         p @files.upload file[:path], file[:path], file[:type]
         p @jobs.add_file job['translationJobUid'], file[:path], @config['locales']
-      }
+      end
 
       # There's some sort of lag between the creating a job and the API
       # returning the correct status, so we add a little delay to compensate
@@ -80,15 +80,26 @@ module McTranslator
       job = @jobs.list['items'].detect { |j| j['jobName'] == current_branch }
       files = @jobs.files(job['translationJobUid'])['items']
       files
-        .map { |file| file['uri'] }
-        .each { |file|
-          @config['locales'].each { |locale|
-            name = file.sub 'en-US', locale
+        .map do |file| file['uri'] end
+        .each do |file|
+          @config['locales'].each do |locale|
+            expansion = {
+              locale: locale,
+              dir: File.dirname(file),
+              name: File.basename(file, '.*'),
+              ext: File.extname(file),
+            }
+
+            name = File.expand_path(@config['rewrite'] % expansion)
             content = @files.download_translated file, locale
 
+            p name
+
+            dir = File.dirname(name)
+            Dir.mkdir(dir) unless Dir.exist?(dir)
             File.write(name, content)
-          }
-        }
+          end
+        end
     end
 
     private
