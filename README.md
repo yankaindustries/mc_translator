@@ -47,11 +47,19 @@ parentBranch: master
 To keep things as simple as possible, we've added some Rake commands so that you can do this as simply as running:
 
 ```zsh
+# Push only changed files (git) to Smartling
 $ rake translator:push
+
+# Push all files that match to Smartling
+$ rake translator:push:all
 ```
 
 and 
 
 ```zsh
+# Pull translated files related to a Smartling job with the same name as your branch
 $ rake translator:pull
+
+# Pull all translated files in Smartling project that match config
+$ rake translator:pull:all
 ```
