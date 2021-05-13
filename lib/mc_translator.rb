@@ -79,7 +79,6 @@ module McTranslator
     def all_files
       config['matches'].flat_map do |matcher|
         Dir.glob(matcher['pattern']).map do |file|
-          p matcher['pattern'], file
           { path: file, name: file, type: matcher['type'] }
         end
       end
