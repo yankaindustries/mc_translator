@@ -25,13 +25,17 @@ Then, in your [Rakefile](https://github.com/yankaindustries/masterclass/blob/i18
 require 'mc_translator'
 ```
 
-Once you've got it installed, you'll need some basic configuration by adding a [.translations.yml](https://github.com/yankaindustries/masterclass/blob/i18n/mc_translator/.translator.yml):
+Once you've got it installed, you'll need some basic configuration by setting up some ENV vars and adding a [.translations.yml](https://github.com/yankaindustries/masterclass/blob/i18n/mc_translator/.translator.yml):
+
+```zsh
+# .env.development
+SMARTLING_USER_ID: xxxxxxxxxxxxxxxxxx
+SMARTLING_USER_SECRET: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SMARTLING_PROJECT_ID: xxxxxxx
+```
 
 ```yaml
 # .translations.yml
-userId:     xxxxxxxxxxxxxxxxxx
-userSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-projectId:  xxxxxxx
 locales:
   - en-GB
 matches:
