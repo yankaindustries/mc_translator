@@ -3,6 +3,7 @@
 require_relative 'mc_translator/version'
 require_relative 'mc_translator/tasks'
 require_relative 'smartling/job'
+require 'dotenv/load'
 require 'yaml'
 require 'git'
 require 'smartling'
@@ -19,9 +20,9 @@ module McTranslator
 
     def initialize
       args = {
-        userId: config['userId'],
-        userSecret: config['userSecret'],
-        projectId: config['projectId'],
+        userId: ENV['SMARTLING_USER_ID'],
+        userSecret: ENV['SMARTLING_USER_SECRET'],
+        projectId: ENV['SMARTLING_PROJECT_ID'],
       }
 
       @files = Smartling::File.new(args)

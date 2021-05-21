@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "git", "~> 1.8.1"
   spec.add_dependency "yaml", "~> 0.1.1"
   spec.add_dependency "smartling", "~> 2.0.3"
+  spec.add_dependency "dotenv"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
