@@ -51,8 +51,13 @@ module McTranslator
       YAML.safe_load(File.read('.translator.yml'))
     end
 
+    def project_root(path = '.')
+      root = config['projectRoot'] || '.'
+      File.expand_path(File.join(Dir.getwd, root, path))
+    end
+
     def git
-      Git.open(Dir.getwd)
+      Git.open(project_root)
     end
 
     def origin
@@ -79,34 +84,32 @@ module McTranslator
 
     def all_files
       config['matches'].flat_map do |matcher|
-        Dir.glob(matcher['pattern']).map do |file|
+        Dir.glob(matcher['pattern'], base: config['projectRoot']).map do |file|
           { path: file, name: file, type: matcher['type'] }
         end
       end
     end
 
     def job_files
-      current_branch = git.current_branch
-
       print_msg 'Getting job and files...'
-      job = @jobs.list['items'].detect { |j| j['jobName'] == current_branch }
+      job = @jobs.list['items'].detect { |j| j['jobName'] == git.current_branch }
       @jobs.files(job['translationJobUid'])['items'].map do |file|
         { path: file['uri'], name: file['uri'] }
       end
     end
 
     def push(files)
-      current_branch = git.current_branch
-
       print_msg 'Setting up job...'
-      job = @jobs.find_or_create current_branch
+      job = @jobs.find_or_create git.current_branch
       p job['translationJobUid']
 
       print_msg 'Uploading files...'
       files.each do |file|
-        p file[:path]
         begin
-          @files.upload file[:path], file[:path], file[:type]
+          name = file[:path]
+          path = File.join(project_root, file[:path])
+          p name, path
+          @files.upload path, name, file[:type]
           @jobs.add_file job['translationJobUid'], file[:path], config['locales']
         rescue => error
           p error
@@ -121,10 +124,10 @@ module McTranslator
       job = @jobs.detail job['translationJobUid']
       p job['jobStatus']
 
-      if job['jobStatus'] == 'AWAITING_AUTHORIZATION'
-        print_msg 'Authorizing job...'
-        @jobs.authorize job["translationJobUid"]
-      end
+      # if job['jobStatus'] == 'AWAITING_AUTHORIZATION'
+      #   print_msg 'Authorizing job...'
+      #   @jobs.authorize job["translationJobUid"]
+      # end
 
       job
     end
