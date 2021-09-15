@@ -57,7 +57,7 @@ module McTranslator
     end
 
     def git
-      Git.open(project_root)
+      Git.open(project_root('..'))
     end
 
     def origin
@@ -134,31 +134,41 @@ module McTranslator
 
     def pull(files)
       files
-        .map do |file| file[:path] end
+        .map { |file| file[:path] }
         .each do |file|
           config['locales'].each do |locale|
-            expansion = {
-              locale: locale,
-              dir: File.dirname(file),
-              name: File.basename(file, '.*').gsub(/en-US/, ''),
-              ext: File.extname(file),
-            }
-
-            name = File.expand_path(config['rewrite'] % expansion)
-            content = @files.download_translated(
-                        file,
-                        locale,
-                        { retrievalType: 'published' }
-                      )
-
-            p file
-            p name
-
-            dir = File.dirname(name)
-            Dir.mkdir(dir) unless Dir.exist?(dir)
-            File.write(name, content)
+            pull_with_locale(file, locale, locale, 'published')
           end
+
+          pull_with_locale(file, 'en-US', 'mc-US', 'pseudo')
         end
+    end
+
+    def pull_with_locale(file, locale_on_smartling, locale_on_mc, type)
+      expansion = {
+        locale: locale_on_mc,
+        dir: File.dirname(file),
+        name: File.basename(file, '.*').gsub(/en-US/, ''),
+        ext: File.extname(file),
+      }
+
+      name = File.expand_path(config['rewrite'] % expansion)
+      content = @files.download_translated(
+        file,
+        locale_on_smartling,
+        retrievalType: type
+      )
+
+      p file
+      p name
+
+      if locale_on_smartling != locale_on_mc && /\.yml/ =~ name
+        content.sub!(Regexp.new(locale_on_smartling), locale_on_mc)
+      end
+
+      dir = File.dirname(name)
+      Dir.mkdir(dir) unless Dir.exist?(dir)
+      File.write(name, content)
     end
   end
 end
