@@ -57,7 +57,7 @@ module McTranslator
     end
 
     def git
-      Git.open(project_root('..'))
+      Git.open(project_root)
     end
 
     def origin
