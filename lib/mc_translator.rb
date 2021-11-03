@@ -20,9 +20,9 @@ module McTranslator
 
     def initialize
       args = {
-        userId: ENV['SMARTLING_USER_ID'],
-        userSecret: ENV['SMARTLING_USER_SECRET'],
-        projectId: ENV['SMARTLING_PROJECT_ID'],
+        userId: ENV['SMARTLING_USER_ID'] || config['userId'],
+        userSecret: ENV['SMARTLING_USER_SECRET'] || config['userSecret'],
+        projectId: ENV['SMARTLING_PROJECT_ID'] || config['projectId'],
       }
 
       @files = Smartling::File.new(args)
