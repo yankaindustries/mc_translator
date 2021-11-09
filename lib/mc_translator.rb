@@ -152,7 +152,7 @@ module McTranslator
         ext: File.extname(file),
       }
 
-      name = File.expand_path(config['rewrite'] % expansion)
+      name = project_root(config['rewrite'] % expansion)
       content = @files.download_translated(
         file,
         locale_on_smartling,
